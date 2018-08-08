@@ -290,6 +290,13 @@ void MqttPublishPowerState(byte device)
   GetTopic_P(stopic, STAT, mqtt_topic, scommand);
   snprintf_P(mqtt_data, sizeof(mqtt_data), GetStateText(bitRead(power, device -1)));
   MqttPublish(stopic, Settings.flag.mqtt_power_retain);
+  MqttPublishGateState();
+}
+
+void void MqttPublishGateState(){
+  GetTopic_P(stopic, STAT, mqtt_topic, S_RSLT_RESULT);
+  strncpy_P(mqtt_data, PSTR("{\""GATE"\":\""OPEN"\"}"), sizeof(mqtt_data));
+  MqttPublish(stopic);
 }
 
 void MqttPublishPowerBlinkState(byte device)
