@@ -194,7 +194,6 @@ bool MqttPublishLib(const char *topic, boolean retained)
 
 void MqttLoop()
 {
-
 }
 
 #endif // MQTT_LIBRARY_TYPE
@@ -323,17 +322,26 @@ void MqttPublishPowerState(byte device)
   MqttPublish(stopic, Settings.flag.mqtt_power_retain);
 }
 
-void MqttPublishGateState(bool open)
+void MqttPublishGateState(int state)
 {
   char stopic[TOPSZ];
+ 
   GetTopic_P(stopic, STAT, mqtt_topic, S_RSLT_RESULT);
-
-  if(open){
-    strncpy_P(mqtt_data, PSTR("{\"GATE\":\"FULLY_OPENED\"}"), sizeof(mqtt_data));
-  }else {
-    strncpy_P(mqtt_data, PSTR("{\"GATE\":\"FULLY_CLOSED\"}"), sizeof(mqtt_data));
+  switch (state)
+  {
+  case 1:
+      strncpy_P(mqtt_data, PSTR("{\"GATE\":\"FULLY_OPENED\"}"), sizeof(mqtt_data));
+    break;
+  case 2:
+      strncpy_P(mqtt_data, PSTR("{\"GATE\":\"FULLY_CLOSED\"}"), sizeof(mqtt_data));
+    break;
+  case 3:
+      strncpy_P(mqtt_data, PSTR("{\"GATE\":\"UNDEFINED\"}"), sizeof(mqtt_data));
+    break;
+  default:
+    strncpy_P(mqtt_data, PSTR("{\"GATE\":\"UNDEFINED\"}"), sizeof(mqtt_data));
+    break;
   }
-  
   MqttPublish(stopic);
 }
 

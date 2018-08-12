@@ -3134,7 +3134,7 @@ bool openSent = false;
 bool closeSent = false;
 bool undefinedSent = false;
 
-//added on the device wires from Gpio0 (button 0 ) and Gpio4 (from the chip directly) 
+//added on the device wires from Gpio0 (button 0 ) and Gpio4 (from the chip directly)
 //when the gate is fully open a mqtt message will be sent with stat/dev_189/RESULT = {"GATE":"FULLY_OPENED"}
 //when the gate is fully closed a mqtt message will be sent with stat/dev_189/RESULT = {"GATE":"FULLY_CLOSED"}
 //when the gate is not fully opened or fully closed a mqtt message will be sent with stat/dev_189/RESULT = {"GATE":"FULLY_UNDEFINDED"}
@@ -3142,14 +3142,14 @@ bool undefinedSent = false;
 void gateSpecificFunctions()
 
 {
-  
+
   if (SONOFF_DUAL_R2 == Settings.module)
   {
     if (!digitalRead(0) && !openSent)
     {
       openSent = true;
       Serial.printf("%s \n", "Gate Fully Opened");
-      MqttPublishGateState(openSent);
+      MqttPublishGateState(1);
     }
     else if ((digitalRead(0) && openSent))
     {
@@ -3160,7 +3160,7 @@ void gateSpecificFunctions()
     {
       closeSent = true;
       Serial.printf("%s \n", "Gate Fully Closed");
-      MqttPublishGateState(openSent);
+      MqttPublishGateState(2);
     }
     else if (digitalRead(4) && closeSent)
     {
@@ -3172,6 +3172,7 @@ void gateSpecificFunctions()
     {
       undefinedSent = true;
       Serial.printf("%s \n", "Gate UNDEFINED");
+      MqttPublishGateState(3);
     }
     else if ((openSent || closeSent) && undefinedSent)
     {
